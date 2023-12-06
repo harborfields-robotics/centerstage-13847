@@ -14,7 +14,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class Hardware {
-
         // Declare OpMode members for each of the 4 motors.
         private ElapsedTime runtime = new ElapsedTime();
         private DcMotor leftFrontDrive = null;
@@ -58,11 +57,23 @@ public class Hardware {
             imuangle = getYaw();
         }
 
-        public void
-
         public void checkImu() {
+
             if (Math.abs(getYaw() - imuangle) < yawChangeAmt)
-            }
+                ;
+        }
+
+        public void setSlidesPower(double power)
+        {
+            ;
+        }
+
+        public void setMotorPowers(double... powers)
+        {
+            leftFrontDrive.setPower(powers[0]);
+            leftBackDrive.setPower(powers[1]);
+            rightBackDrive.setPower(powers[2]);
+            rightFrontDrive.setPower(powers[3]);
         }
 
         /*
