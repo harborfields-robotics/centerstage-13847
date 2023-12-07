@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -20,6 +21,8 @@ public class Hardware {
         private DcMotor leftBackDrive = null;
         private DcMotor rightFrontDrive = null;
         private DcMotor rightBackDrive = null;
+        private DcMotor slideLeft = null;
+        private DcMotor slideRight = null;
         private IMU imu;
         private double yawChangeAmt = 10;
         private double imuangle;
@@ -29,12 +32,17 @@ public class Hardware {
             leftBackDrive = hardwareMap.get(DcMotor.class, "BL");
             rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
             rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
+            slideLeft = hardwareMap.get(DcMotor.class, "[{}{}{}{}]");
+            slideRight = hardwareMap.get(DcMotor.class, "[{}{}{}{}]2");
             imu =  hardwareMap.get(IMU.class, "imu");
 
             leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
             leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
             rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
             rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+            slideLeft.setDirection(DcMotor.Direction.FORWARD);
+            slideRight.setDirection(DcMotor.Direction.FORWARD);
+
 
             RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
             RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
@@ -63,9 +71,10 @@ public class Hardware {
                 ;
         }
 
-        public void setSlidesPower(double power)
+        public void setSlidesPower(double... power)
         {
-            ;
+            slideLeft.setPower(power[0]);
+            slideRight.setPower(power[1]);
         }
 
         public void setMotorPowers(double... powers)
