@@ -32,8 +32,7 @@ public class Hardware {
             leftBackDrive = hardwareMap.get(DcMotor.class, "BL");
             rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
             rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
-            slideLeft = hardwareMap.get(DcMotor.class, "[{}{}{}{}]");
-            slideRight = hardwareMap.get(DcMotor.class, "[{}{}{}{}]2");
+            slideRight = hardwareMap.get(DcMotor.class, "SR");
             imu =  hardwareMap.get(IMU.class, "imu");
 
             leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -71,10 +70,9 @@ public class Hardware {
                 ;
         }
 
-        public void setSlidesPower(double... power)
+        public void setSlidesPower(double power)
         {
-            slideLeft.setPower(power[0]);
-            slideRight.setPower(power[1]);
+            slideLeft.setPower(power);
         }
 
         public void setMotorPowers(double... powers)
