@@ -106,7 +106,7 @@ public class Ezra_op extends LinearOpMode {
             double rightBackPower  = axial + lateral - yaw;
             double slidePower = gamepad2.left_stick_y;
 
-            hardware.setIntakePower(gamepad2.right_trigger);
+
 
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
@@ -124,6 +124,7 @@ public class Ezra_op extends LinearOpMode {
             // Send calculated power to wheels
             hardware.setMotorPowers(leftFrontPower, leftBackPower, rightBackPower, rightFrontPower);
             hardware.setSlidesPower(slidePower);
+            hardware.setIntakePower(gamepad2.right_trigger - gamepad2.left_trigger);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
