@@ -21,8 +21,8 @@ public class Hardware {
         private DcMotor leftBackDrive = null;
         private DcMotor rightFrontDrive = null;
         private DcMotor rightBackDrive = null;
-        private DcMotor slideLeft = null;
         private DcMotor slideRight = null;
+        private DcMotor intake = null;
         private IMU imu;
         private double yawChangeAmt = 10;
         private double imuangle;
@@ -33,14 +33,16 @@ public class Hardware {
             rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
             rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
             slideRight = hardwareMap.get(DcMotor.class, "SR");
+            intake = hardwareMap.get(DcMotor.class, "IT");
             imu =  hardwareMap.get(IMU.class, "imu");
 
             leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
             leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
             rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
             rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-            slideLeft.setDirection(DcMotor.Direction.FORWARD);
             slideRight.setDirection(DcMotor.Direction.FORWARD);
+            intake.setDirection(DcMotor.Direction.FORWARD);
+
 
 
             RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
@@ -72,10 +74,16 @@ public class Hardware {
 
         public void setSlidesPower(double power)
         {
-            slideLeft.setPower(power);
+            slideRight.setPower(power);
         }
 
-        public void setMotorPowers(double... powers)
+        public void setIntakePower(double power)
+        {
+            intake.setPower(power);
+        }
+
+
+    public void setMotorPowers(double... powers)
         {
             leftFrontDrive.setPower(powers[0]);
             leftBackDrive.setPower(powers[1]);
