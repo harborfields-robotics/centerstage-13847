@@ -27,6 +27,8 @@ public class Hardware {
         private double yawChangeAmt = 10;
         private double imuangle;
 
+        public static final double SLOW_RATE = 0.3;
+
         public Hardware(HardwareMap hardwareMap) {
             leftFrontDrive = hardwareMap.get(DcMotor.class, "FL");
             leftBackDrive = hardwareMap.get(DcMotor.class, "BL");
@@ -36,10 +38,10 @@ public class Hardware {
             intake = hardwareMap.get(DcMotor.class, "IT");
             imu =  hardwareMap.get(IMU.class, "imu");
 
-            leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-            leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-            rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-            rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+            leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+            leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
+            rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+            rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
             slideRight.setDirection(DcMotor.Direction.FORWARD);
             intake.setDirection(DcMotor.Direction.FORWARD);
 
@@ -83,12 +85,20 @@ public class Hardware {
         }
 
 
-    public void setMotorPowers(double... powers)
+        public void setMotorPowers(double... powers)
         {
             leftFrontDrive.setPower(powers[0]);
             leftBackDrive.setPower(powers[1]);
             rightBackDrive.setPower(powers[2]);
             rightFrontDrive.setPower(powers[3]);
+        }
+
+        public void setMotorSlowMode(double... powers)
+        {
+            leftFrontDrive.setPower(powers[0] * SLOW_RATE);
+            leftBackDrive.setPower(powers[1] * SLOW_RATE);
+            rightBackDrive.setPower(powers[2] * SLOW_RATE);
+            rightFrontDrive.setPower(powers[3] * SLOW_RATE);
         }
 
         /*
