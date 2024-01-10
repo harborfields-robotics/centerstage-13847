@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -22,8 +24,10 @@ public class Hardware {
         private DcMotor rightFrontDrive = null;
         private DcMotor rightBackDrive = null;
         private DcMotor slideRight = null;
-        private DcMotor intake = null;
-        private IMU imu;
+        private Servo intake = null;
+        private Servo elbow_Left = null;
+        private Servo elbow_Right = null;
+        private IMU imu
         private double yawChangeAmt = 10;
         private double imuangle;
 
@@ -35,7 +39,9 @@ public class Hardware {
             rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
             rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
             slideRight = hardwareMap.get(DcMotor.class, "SR");
-            intake = hardwareMap.get(DcMotor.class, "IT");
+            intake = hardwareMap.get(Servo.class, "IT");
+            elbow_Left = hardwareMap.get(Servo.class, "EL");
+            elbow_Right = hardwareMap.get(Servo.class, "ER");
             imu =  hardwareMap.get(IMU.class, "imu");
 
             leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -43,8 +49,6 @@ public class Hardware {
             rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
             rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
             slideRight.setDirection(DcMotor.Direction.FORWARD);
-            intake.setDirection(DcMotor.Direction.FORWARD);
-
 
 
             RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
@@ -79,9 +83,16 @@ public class Hardware {
             slideRight.setPower(power);
         }
 
-        public void setIntakePower(double power)
+        public void setIntakePosition(double power)
         {
-            intake.setPower(power);
+            intake.setPosition(power);
+        }
+
+
+        public void setElbowPosition(double power)
+        {
+             elbow_Right.setPosition(power);
+             elbow_Left.setPosition(power);
         }
 
 
