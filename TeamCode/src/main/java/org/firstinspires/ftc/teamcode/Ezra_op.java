@@ -45,6 +45,7 @@ public class Ezra_op extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
     private DcMotor slideRight = null;
+    private DcMotor intake = null;
     private Hardware hardware;
 
     @Override
@@ -103,14 +104,15 @@ public class Ezra_op extends LinearOpMode {
                 hardware.setMotorSlowMode(powers);
             else
                 hardware.setMotorPowers(powers);
+
             hardware.setSlidesPower(slidePower);
 
             if (gamepad2.dpad_up)
-                hardware.setIntakePosition(1);
+                hardware.setIntakePower(1);
             else if (gamepad2.dpad_down)
-                hardware.setIntakePosition(0);
+                hardware.setIntakePower(-1);
             else{
-                hardware.setIntakePosition(0.5);
+                hardware.setIntakePower(0);
             }
 
             if (gamepad2.right_stick_y > 0.2)

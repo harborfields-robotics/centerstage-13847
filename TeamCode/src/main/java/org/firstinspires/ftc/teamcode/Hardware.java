@@ -24,7 +24,7 @@ public class Hardware {
         private DcMotor rightFrontDrive = null;
         private DcMotor rightBackDrive = null;
         private DcMotor slideRight = null;
-        private Servo intake = null;
+        private DcMotor intake = null;
         private Servo elbow_Left = null;
         private Servo elbow_Right = null;
         private Servo claw_Green;
@@ -41,7 +41,7 @@ public class Hardware {
             rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
             rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
             slideRight = hardwareMap.get(DcMotor.class, "SR");
-            intake = hardwareMap.get(Servo.class, "IT");
+            intake = hardwareMap.get(DcMotor.class, "IT");
             elbow_Left = hardwareMap.get(Servo.class, "EL");
             elbow_Right = hardwareMap.get(Servo.class, "ER");
             claw_Green = hardwareMap.get(Servo.class, "CG");
@@ -53,6 +53,7 @@ public class Hardware {
             rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
             rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
             slideRight.setDirection(DcMotor.Direction.FORWARD);
+            intake.setDirection(DcMotor.Direction.FORWARD);
 
 
             RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
@@ -87,9 +88,9 @@ public class Hardware {
             slideRight.setPower(power);
         }
 
-        public void setIntakePosition(double power)
+        public void setIntakePower(double power)
         {
-            intake.setPosition(power);
+            intake.setPower(power);
         }
 
         public void setClaw_Greenposition(double power){claw_Green.setPosition(power);}
