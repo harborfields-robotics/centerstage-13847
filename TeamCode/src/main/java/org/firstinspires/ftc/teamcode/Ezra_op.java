@@ -105,15 +105,35 @@ public class Ezra_op extends LinearOpMode {
                 hardware.setMotorPowers(powers);
             hardware.setSlidesPower(slidePower);
 
-            if (gamepad2.left_stick_y > 0.2)
+            if (gamepad2.dpad_up)
                 hardware.setIntakePosition(1);
-            else if (gamepad2.left_stick_y < -0.2)
+            else if (gamepad2.dpad_down)
                 hardware.setIntakePosition(0);
             else{
                 hardware.setIntakePosition(0.5);
             }
 
+            if (gamepad2.right_stick_y > 0.2)
+                hardware.setElbowPosition(1);
+            else if (gamepad2.right_stick_y < -0.2)
+                hardware.setElbowPosition(0);
+            else{
+                hardware.setElbowPosition(0.5);
+            }
 
+            if (gamepad2.left_bumper)
+                hardware.setClaw_Greenposition(1);
+            else if (gamepad2.left_trigger > 0.2)
+                hardware.setClaw_Greenposition(
+                        hardware.getClaw_Greenposition() - 0.05
+                );
+
+            if (gamepad2.right_bumper)
+                hardware.setClaw_Redposition(1);
+            else if (gamepad2.right_trigger > 0.2)
+                hardware.setClaw_Redposition(
+                        hardware.getClaw_Redposition() - 0.05
+                );
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());

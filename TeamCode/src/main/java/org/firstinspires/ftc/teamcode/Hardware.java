@@ -27,7 +27,9 @@ public class Hardware {
         private Servo intake = null;
         private Servo elbow_Left = null;
         private Servo elbow_Right = null;
-        private IMU imu
+        private Servo claw_Green;
+        private Servo claw_Red;
+        private IMU imu;
         private double yawChangeAmt = 10;
         private double imuangle;
 
@@ -42,6 +44,8 @@ public class Hardware {
             intake = hardwareMap.get(Servo.class, "IT");
             elbow_Left = hardwareMap.get(Servo.class, "EL");
             elbow_Right = hardwareMap.get(Servo.class, "ER");
+            claw_Green = hardwareMap.get(Servo.class, "CG");
+            claw_Red = hardwareMap.get(Servo.class, "CR");
             imu =  hardwareMap.get(IMU.class, "imu");
 
             leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -88,6 +92,11 @@ public class Hardware {
             intake.setPosition(power);
         }
 
+        public void setClaw_Greenposition(double power){claw_Green.setPosition(power);}
+        public void setClaw_Redposition(double power){claw_Red.setPosition(power);}
+
+        public double getClaw_Greenposition() { return claw_Green.getPosition(); }
+        public double getClaw_Redposition() { return claw_Red.getPosition(); }
 
         public void setElbowPosition(double power)
         {
