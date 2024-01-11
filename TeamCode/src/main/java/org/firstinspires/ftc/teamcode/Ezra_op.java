@@ -63,6 +63,7 @@ public class Ezra_op extends LinearOpMode {
         runtime.reset();
 
         boolean slowMode = false;
+        boolean slideSlowMode = false;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -97,6 +98,8 @@ public class Ezra_op extends LinearOpMode {
 
             if (gamepad1.left_bumper)
                 slowMode = !slowMode;
+            if (gamepad2.x)
+                slideSlowMode = !slideSlowMode;
 
             // Send calculated power to wheels
             double powers[] = { leftFrontPower, leftBackPower, rightBackPower, rightFrontPower };
@@ -105,7 +108,11 @@ public class Ezra_op extends LinearOpMode {
             else
                 hardware.setMotorPowers(powers);
 
-            hardware.setSlidesPower(slidePower);
+            if (slideSlowMode)
+                hardware.setSlidesSlowMode(slidePower);
+            else
+                hardware.setMotorPowers(slidePower);
+
 
             if (gamepad2.dpad_up)
                 hardware.setIntakePower(1);

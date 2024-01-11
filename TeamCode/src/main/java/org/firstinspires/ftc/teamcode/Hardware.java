@@ -115,12 +115,17 @@ public class Hardware {
         }
 
         public void setMotorSlowMode(double... powers)
-        {
-            leftFrontDrive.setPower(powers[0] * SLOW_RATE);
-            leftBackDrive.setPower(powers[1] * SLOW_RATE);
-            rightBackDrive.setPower(powers[2] * SLOW_RATE);
-            rightFrontDrive.setPower(powers[3] * SLOW_RATE);
+            {
+                leftFrontDrive.setPower(powers[0] * SLOW_RATE);
+                leftBackDrive.setPower(powers[1] * SLOW_RATE);
+                rightBackDrive.setPower(powers[2] * SLOW_RATE);
+                rightFrontDrive.setPower(powers[3] * SLOW_RATE);
         }
+        public void setSlidesSlowMode(double power)
+    {
+        slideRight.setPower( power * SLOW_RATE);
+    }
+
 
         /*
 
