@@ -98,7 +98,7 @@ public class Ezra_op extends LinearOpMode {
 
             if (gamepad1.left_bumper)
                 slowMode = !slowMode;
-            if (gamepad2.x)
+            if (gamepad2.a)
                 slideSlowMode = !slideSlowMode;
 
             // Send calculated power to wheels
@@ -114,9 +114,9 @@ public class Ezra_op extends LinearOpMode {
                 hardware.setMotorPowers(slidePower);
 
 
-            if (gamepad2.dpad_up)
+            if (gamepad1.dpad_up)
                 hardware.setIntakePower(1);
-            else if (gamepad2.dpad_down)
+            else if (gamepad1.dpad_down)
                 hardware.setIntakePower(-1);
             else{
                 hardware.setIntakePower(0);
