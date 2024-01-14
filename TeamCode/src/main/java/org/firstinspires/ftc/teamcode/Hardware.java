@@ -63,7 +63,7 @@ public class Hardware {
             leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
             rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
             rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
-            slideRight.setDirection(DcMotor.Direction.FORWARD);
+            slideRight.setDirection(DcMotor.Direction.REVERSE);
             intake.setDirection(DcMotor.Direction.FORWARD);
 
 
@@ -137,7 +137,7 @@ public class Hardware {
         slideRight.setPower( power * SLOW_RATE);
     }
 
-
+/*
         public void setMotorPower(double fl, double fr, double bl, double br)
         {
             leftFrontDrive.setPower(fl);
@@ -403,4 +403,6 @@ public void setMotorTargets(double fl, double fr, double bl, double br)
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
+
+ */
 }

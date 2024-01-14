@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Ezra_op", group="Linear OpMode")
@@ -46,6 +47,11 @@ public class Ezra_op extends LinearOpMode {
     private DcMotor rightBackDrive = null;
     private DcMotor slideRight = null;
     private DcMotor intake = null;
+    private Servo elbow_Left = null;
+    private Servo elbow_Right = null;
+    private Servo claw_Green;
+    private Servo claw_Red;
+    private  double MAX_POSITION = 3;
     private Hardware hardware;
 
     @Override
@@ -54,7 +60,16 @@ public class Ezra_op extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
         hardware = new Hardware(hardwareMap);
-
+        slideRight = hardwareMap.get(DcMotor.class, "SR");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "FL");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "BL");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
+        intake = hardwareMap.get(DcMotor.class, "IT");
+        elbow_Left = hardwareMap.get(Servo.class, "EL");
+        elbow_Right = hardwareMap.get(Servo.class, "ER");
+        claw_Green = hardwareMap.get(Servo.class, "CG");
+        claw_Red = hardwareMap.get(Servo.class, "CR");
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -108,10 +123,14 @@ public class Ezra_op extends LinearOpMode {
             else
                 hardware.setMotorPowers(powers);
 
+            if ((slideRight.getPower() >0)&&(slideRight.getCurrentPosition() > MAX_POSITION)){
+                slideRight.setPower(0);
+            }
+
             if (slideSlowMode)
                 hardware.setSlidesSlowMode(slidePower);
             else
-                hardware.setMotorPowers(slidePower);
+                hardware.setSlidesPower(slidePower);
 
 
             if (gamepad1.dpad_up)
