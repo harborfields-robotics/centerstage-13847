@@ -36,10 +36,10 @@ public class Hardware {
         private DcMotor rightBackDrive = null;
         private DcMotor slideRight = null;
         private DcMotor intake = null;
-        private Servo elbow_Left = null;
-        private Servo elbow_Right = null;
-        private Servo claw_Green;
-        private Servo claw_Red;
+        public Servo elbow_Left = null;
+        public Servo elbow_Right = null;
+        public Servo claw_Green;
+        public Servo claw_Red;
         private IMU imu;
         private double yawChangeAmt = 10;
         private double imuangle;
@@ -59,6 +59,9 @@ public class Hardware {
             claw_Green = hardwareMap.get(Servo.class, "CG");
             claw_Red = hardwareMap.get(Servo.class, "CR");
             imu =  hardwareMap.get(IMU.class, "imu");
+
+            slideRight.setMode(STOP_AND_RESET_ENCODER);
+            slideRight.setMode(RUN_WITHOUT_ENCODER);
 
             leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
             leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -266,6 +269,8 @@ public class Hardware {
                 (int) (num_tiles * ticks_per_tile),
                 (int) (num_tiles * ticks_per_tile));
         setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
+        setMotorPowers(power);
+
     }
 
     public void slideAuto(double power, long milliseconds) throws java.lang.InterruptedException{

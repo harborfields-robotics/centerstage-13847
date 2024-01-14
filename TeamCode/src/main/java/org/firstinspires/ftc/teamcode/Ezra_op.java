@@ -51,7 +51,7 @@ public class Ezra_op extends LinearOpMode {
     private Servo elbow_Right = null;
     private Servo claw_Green;
     private Servo claw_Red;
-    private  double MAX_POSITION = 3;
+    public static final double MAX_POSITION = 6000, MIN_POSITION = 0;
     private Hardware hardware;
 
     @Override
@@ -70,6 +70,10 @@ public class Ezra_op extends LinearOpMode {
         elbow_Right = hardwareMap.get(Servo.class, "ER");
         claw_Green = hardwareMap.get(Servo.class, "CG");
         claw_Red = hardwareMap.get(Servo.class, "CR");
+
+        claw_Green.scaleRange(0.25, 0.75);
+        elbow_Left.scaleRange(0,0.25);
+
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -80,93 +84,100 @@ public class Ezra_op extends LinearOpMode {
         boolean slowMode = false;
         boolean slideSlowMode = false;
 
-        // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            double max;
-
-            // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x;
-            double yaw     =  gamepad1.right_stick_x;
-            // Combine the joystick requests for each axis-motion to determine each wheel's power.
-            // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower  = axial + lateral + yaw;
-            double rightFrontPower = axial - lateral - yaw;
-            double leftBackPower   = axial - lateral + yaw;
-            double rightBackPower  = axial + lateral - yaw;
-            double slidePower = gamepad2.left_stick_y;
+            telemetry.addData("elbow left", hardware.elbow_Left.getPosition());
+            telemetry.addData("elbow right", hardware.elbow_Right.getPosition());
 
 
+            // run until the end of the match (driver presses STOP)
+            //while (opModeIsActive()) {
 
-            // Normalize the values so no wheel power exceeds 100%
-            // This ensures that the robot maintains the desired motion.
-            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-            max = Math.max(max, Math.abs(leftBackPower));
-            max = Math.max(max, Math.abs(rightBackPower));
+                double max;
 
-            if (max > 1.0) {
-                leftFrontPower  /= max;
-                rightFrontPower /= max;
-                leftBackPower   /= max;
-                rightBackPower  /= max;
-            }
-
-            if (gamepad1.left_bumper)
-                slowMode = !slowMode;
-            if (gamepad2.a)
-                slideSlowMode = !slideSlowMode;
-
-            // Send calculated power to wheels
-            double powers[] = { leftFrontPower, leftBackPower, rightBackPower, rightFrontPower };
-            if (slowMode)
-                hardware.setMotorSlowMode(powers);
-            else
-                hardware.setMotorPowers(powers);
-
-            if ((slideRight.getPower() >0)&&(slideRight.getCurrentPosition() > MAX_POSITION)){
-                slideRight.setPower(0);
-            }
-
-            if (slideSlowMode)
-                hardware.setSlidesSlowMode(slidePower);
-            else
-                hardware.setSlidesPower(slidePower);
+                // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
+                double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+                double lateral = gamepad1.left_stick_x;
+                double yaw = gamepad1.right_stick_x;
+                // Combine the joystick requests for each axis-motion to determine each wheel's power.
+                // Set up a variable for each drive wheel to save the power level for telemetry.
+                double leftFrontPower = axial + lateral + yaw;
+                double rightFrontPower = axial - lateral - yaw;
+                double leftBackPower = axial - lateral + yaw;
+                double rightBackPower = axial + lateral - yaw;
+                double slidePower = gamepad2.left_stick_y;
 
 
-            if (gamepad1.dpad_up)
-                hardware.setIntakePower(1);
-            else if (gamepad1.dpad_down)
-                hardware.setIntakePower(-1);
-            else{
-                hardware.setIntakePower(0);
-            }
+                // Normalize the values so no wheel power exceeds 100%
+                // This ensures that the robot maintains the desired motion.
+                max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+                max = Math.max(max, Math.abs(leftBackPower));
+                max = Math.max(max, Math.abs(rightBackPower));
 
-            if (gamepad2.right_stick_y > 0.2)
-                hardware.setElbowPosition(1);
-            else if (gamepad2.right_stick_y < -0.2)
-                hardware.setElbowPosition(0);
-            else{
-                hardware.setElbowPosition(0.5);
-            }
+                if (max > 1.0) {
+                    leftFrontPower /= max;
+                    rightFrontPower /= max;
+                    leftBackPower /= max;
+                    rightBackPower /= max;
+                }
 
-            if (gamepad2.left_bumper)
-                hardware.setClaw_Greenposition(1);
-            else if (gamepad2.left_trigger > 0.2)
-                hardware.setClaw_Greenposition(
-                        hardware.getClaw_Greenposition() - 0.05
-                );
+                if (gamepad1.left_bumper)
+                    slowMode = !slowMode;
+                if (gamepad2.a)
+                    slideSlowMode = !slideSlowMode;
 
-            if (gamepad2.right_bumper)
-                hardware.setClaw_Redposition(1);
-            else if (gamepad2.right_trigger > 0.2)
-                hardware.setClaw_Redposition(
-                        hardware.getClaw_Redposition() - 0.05
-                );
+                // Send calculated power to wheels
+                double powers[] = {leftFrontPower, leftBackPower, rightBackPower, rightFrontPower};
+                if (slowMode)
+                    hardware.setMotorSlowMode(powers);
+                else
+                    hardware.setMotorPowers(powers);
 
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-            telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-            telemetry.update();
+                if (slideRight.getPower() > 0 && slideRight.getCurrentPosition() > MAX_POSITION) {
+                    slideRight.setPower(0);
+                } else if (slideRight.getPower() < 0 && slideRight.getCurrentPosition() < MIN_POSITION) {
+                    slideRight.setPower(0);
+                }
+
+                if (slideSlowMode)
+                    hardware.setSlidesSlowMode(slidePower);
+                else
+                    hardware.setSlidesPower(slidePower);
+
+
+                if (gamepad1.dpad_up)
+                    hardware.setIntakePower(1);
+                else if (gamepad1.dpad_down)
+                    hardware.setIntakePower(-1);
+                else {
+                    hardware.setIntakePower(0);
+                }
+
+                if (gamepad2.right_stick_y > 0.2)
+                    hardware.setElbowPosition(0);
+                else if (gamepad2.right_stick_y < -0.2)
+                    hardware.setElbowPosition(1);
+                else {
+                    hardware.setElbowPosition(0.5);
+                }
+
+                if (gamepad2.left_bumper)
+                    hardware.setClaw_Greenposition(1);
+                else if (gamepad2.left_trigger > 0.2)
+                    hardware.setClaw_Greenposition(hardware.getClaw_Greenposition() - 0.05);
+                else hardware.setClaw_Greenposition(0.5);
+
+                if (gamepad2.right_bumper)
+                    hardware.setClaw_Redposition(1);
+                else if (gamepad2.right_trigger > 0.2)
+                    hardware.setClaw_Redposition(hardware.getClaw_Redposition() - 0.05);
+
+                // Show the elapsed game time and wheel power.
+                telemetry.addData("Status", "Run Time: " + runtime.toString());
+                telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
+                telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
+                telemetry.update();
         }
-    }}
+    }
+}
+
+
