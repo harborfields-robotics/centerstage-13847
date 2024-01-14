@@ -20,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
+
 public class Hardware {
         // Declare OpMode members for each of the 4 motors.
     // public static final double ticks_per_tile = 23 / (96 / 25.4) * 384.5;
@@ -265,27 +266,28 @@ public class Hardware {
                 (int) (num_tiles * ticks_per_tile),
                 (int) (num_tiles * ticks_per_tile));
         setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 
-        public void slideAuto(double power, long seconds){
+    public void slideAuto(double power, long milliseconds) throws java.lang.InterruptedException{
             setSlidesPower(power);
-            Thread.sleep(seconds * 1000);
+            Thread.sleep(milliseconds);
             setSlidesPower(0);
         }
 
-        public void elbowAuto(double position, long seconds){
+        public void elbowAuto(double position, long milliseconds)throws java.lang.InterruptedException {
             setElbowPosition(position);
-            Thread.sleep(seconds * 1000);
+            Thread.sleep(milliseconds);
             setElbowPosition(0.5);
         }
-        public void clawGreenAuto(double position, long seconds){
+        public void clawGreenAuto(double position, long milliseconds) throws java.lang.InterruptedException {
             setClaw_Greenposition(position);
-            Thread.sleep(seconds * 1000);
+            Thread.sleep(milliseconds);
             setClaw_Greenposition(0.5);
         }
 
 
-
-        while (FL.getPower() < power && FL.getCurrentPosition() < FL.getTargetPosition()) {
+        public void EmilysCopyPaste(int power) throws java.lang.InterruptedException{
+        while ((FL.getPower() < power) && (FL.getCurrentPosition() < FL.getTargetPosition())) {
             setMotorPower(FL.getPower()+(power/10), FR.getPower()+(power/10), BL.getPower()+(power/10), BR.getPower()+(power/10));
             try {
                 Thread.sleep(25);
