@@ -137,7 +137,7 @@ public class Hardware {
         slideRight.setPower( power * SLOW_RATE);
     }
 
-/*
+
         public void setMotorPower(double fl, double fr, double bl, double br)
         {
             leftFrontDrive.setPower(fl);
@@ -145,7 +145,8 @@ public class Hardware {
             leftBackDrive.setPower(bl);
             rightBackDrive.setPower(br);
         }
-public void setMotorTargets(double fl, double fr, double bl, double br)
+
+        public void setMotorTargets(double fl, double fr, double bl, double br)
         {
             leftFrontDrive.setTargetPosition((int) fl);
             rightFrontDrive.setTargetPosition((int) fr);
@@ -159,7 +160,8 @@ public void setMotorTargets(double fl, double fr, double bl, double br)
             leftBackDrive.setMode(mode);
             rightBackDrive.setMode(mode);
         }
-    public void strafeLeft(double num_tiles, double power) {
+
+        public void strafeLeft(double num_tiles, double power) {
         setMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setMotorTargets((int) (-num_tiles * ticks_per_tile * strafe_constant), // FL
                 (int) (num_tiles  * ticks_per_tile * strafe_constant), // FR
@@ -263,6 +265,25 @@ public void setMotorTargets(double fl, double fr, double bl, double br)
                 (int) (num_tiles * ticks_per_tile),
                 (int) (num_tiles * ticks_per_tile));
         setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
+
+        public void slideAuto(double power, long seconds){
+            setSlidesPower(power);
+            Thread.sleep(seconds * 1000);
+            setSlidesPower(0);
+        }
+
+        public void elbowAuto(double position, long seconds){
+            setElbowPosition(position);
+            Thread.sleep(seconds * 1000);
+            setElbowPosition(0.5);
+        }
+        public void clawGreenAuto(double position, long seconds){
+            setClaw_Greenposition(position);
+            Thread.sleep(seconds * 1000);
+            setClaw_Greenposition(0.5);
+        }
+
+
 
         while (FL.getPower() < power && FL.getCurrentPosition() < FL.getTargetPosition()) {
             setMotorPower(FL.getPower()+(power/10), FR.getPower()+(power/10), BL.getPower()+(power/10), BR.getPower()+(power/10));
@@ -404,5 +425,4 @@ public void setMotorTargets(double fl, double fr, double bl, double br)
         BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
- */
 }
