@@ -45,12 +45,8 @@ public class Ezra_op extends LinearOpMode {
     private DcMotor leftBackDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
-    private DcMotor slideRight = null;
-    private DcMotor intake = null;
-    private Servo elbow_Left = null;
-    private Servo elbow_Right = null;
-    private Servo claw_Green;
-    private Servo claw_Red;
+    private DcMotor arm = null;
+    private Servo claw;
     public static final double MAX_POSITION = 6000, MIN_POSITION = 0;
     private Hardware hardware;
 
@@ -60,19 +56,15 @@ public class Ezra_op extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
         hardware = new Hardware(hardwareMap);
-        slideRight = hardwareMap.get(DcMotor.class, "SR");
+        arm = hardwareMap.get(DcMotor.class, "ARM");
         leftFrontDrive = hardwareMap.get(DcMotor.class, "FL");
         leftBackDrive = hardwareMap.get(DcMotor.class, "BL");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
-        intake = hardwareMap.get(DcMotor.class, "IT");
-        elbow_Left = hardwareMap.get(Servo.class, "EL");
-        elbow_Right = hardwareMap.get(Servo.class, "ER");
-        claw_Green = hardwareMap.get(Servo.class, "CG");
-        claw_Red = hardwareMap.get(Servo.class, "CR");
+        claw = hardwareMap.get(Servo.class, "CLAW");
 
-        claw_Green.scaleRange(0.25, 0.75);
-        elbow_Left.scaleRange(0,0.25);
+        //claw_Green.scaleRange(0.25, 0.75);
+        //elbow_Left.scaleRange(0,0.25);  servo programs
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -82,11 +74,9 @@ public class Ezra_op extends LinearOpMode {
         runtime.reset();
 
         boolean slowMode = false;
-        boolean slideSlowMode = false;
+        boolean armSlowMode = false;
 
         while (opModeIsActive()) {
-            telemetry.addData("elbow left", hardware.elbow_Left.getPosition());
-            telemetry.addData("elbow right", hardware.elbow_Right.getPosition());
 
 
             // run until the end of the match (driver presses STOP)
@@ -104,7 +94,7 @@ public class Ezra_op extends LinearOpMode {
                 double rightFrontPower = axial - lateral - yaw;
                 double leftBackPower = axial - lateral + yaw;
                 double rightBackPower = axial + lateral - yaw;
-                double slidePower = gamepad2.left_stick_y;
+                double armPower = gamepad2.left_stick_y;
 
 
                 // Normalize the values so no wheel power exceeds 100%
@@ -123,7 +113,7 @@ public class Ezra_op extends LinearOpMode {
                 if (gamepad1.left_bumper)
                     slowMode = !slowMode;
                 if (gamepad2.a)
-                    slideSlowMode = !slideSlowMode;
+                    armSlowMode = !armSlowMode;
 
                 // Send calculated power to wheels
                 double powers[] = {leftFrontPower, leftBackPower, rightBackPower, rightFrontPower};
@@ -132,44 +122,29 @@ public class Ezra_op extends LinearOpMode {
                 else
                     hardware.setMotorPowers(powers);
 
-                if (slideRight.getPower() > 0 && slideRight.getCurrentPosition() > MAX_POSITION) {
-                    slideRight.setPower(0);
-                } else if (slideRight.getPower() < 0 && slideRight.getCurrentPosition() < MIN_POSITION) {
-                    slideRight.setPower(0);
+                if (arm.getPower() > 0 && arm.getCurrentPosition() > MAX_POSITION) {
+                    arm.setPower(0);
+                } else if (arm.getPower() < 0 && arm.getCurrentPosition() < MIN_POSITION) {
+                    arm.setPower(0);
                 }
 
-                if (slideSlowMode)
-                    hardware.setSlidesSlowMode(slidePower);
+                if (gamepad1.dpad_left){
+                    hardware.turnLeft(45,1);
+                }
+                else if (gamepad1.dpad_right){
+                    hardware.turnRight(45,1);
+                }
+
+                if (armSlowMode)
+                    hardware.setArmsSlowMode(armPower);
                 else
-                    hardware.setSlidesPower(slidePower);
-
-
-                if (gamepad1.dpad_up)
-                    hardware.setIntakePower(1);
-                else if (gamepad1.dpad_down)
-                    hardware.setIntakePower(-1);
-                else {
-                    hardware.setIntakePower(0);
-                }
-
-                if (gamepad2.right_stick_y > 0.2)
-                    hardware.setElbowPosition(0);
-                else if (gamepad2.right_stick_y < -0.2)
-                    hardware.setElbowPosition(1);
-                else {
-                    hardware.setElbowPosition(0.5);
-                }
+                    hardware.setArmPower(armPower);
 
                 if (gamepad2.left_bumper)
-                    hardware.setClaw_Greenposition(1);
+                    hardware.setClawposition(1);
                 else if (gamepad2.left_trigger > 0.2)
-                    hardware.setClaw_Greenposition(hardware.getClaw_Greenposition() - 0.05);
-                else hardware.setClaw_Greenposition(0.5);
-
-                if (gamepad2.right_bumper)
-                    hardware.setClaw_Redposition(1);
-                else if (gamepad2.right_trigger > 0.2)
-                    hardware.setClaw_Redposition(hardware.getClaw_Redposition() - 0.05);
+                    hardware.setClawposition(hardware.getClawposition() - 0.05);
+                else hardware.setClawposition(0.5);
 
                 // Show the elapsed game time and wheel power.
                 telemetry.addData("Status", "Run Time: " + runtime.toString());
