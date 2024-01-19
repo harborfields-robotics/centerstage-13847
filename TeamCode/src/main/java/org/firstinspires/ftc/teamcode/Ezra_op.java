@@ -37,7 +37,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Ezra_op", group="Linear OpMode")
-public class Ezra_op extends LinearOpMode {
+public class Ezra_op extends LinearOpMode
+{
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
