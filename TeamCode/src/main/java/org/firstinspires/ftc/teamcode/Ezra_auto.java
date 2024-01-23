@@ -61,29 +61,25 @@ public class Ezra_auto extends LinearOpMode {
 
         // CHANGE THIS TO WHAT YOU WANT THE ROBOT TO DO
         // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        // THIS IS WHERE HTE STUFF HAPPENS
-        //encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        //encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        //encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
-        while (opModeIsActive()) {
-            telemetry.addLine("...");
-            telemetry.update();
-        }
-        /*
-        hardware.smoothDriveForward(1,1);
-/*
-//
+        //        // Note: Reverse movement is obtained by setting a negative distance (not speed)
+        //        // THIS IS WHERE HTE STUFF HAPPENS
+        //        //encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        //        //encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+        //        //encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+
+        hardware.driveForward(1, 1);
+        hardware.turnLeft(90,1);
+        hardware.driveForward(4.3,1);
+
         //hardware.slideAuto(1,1);
         //hardware.elbowAuto(0,1);
         //hardware.clawGreenAuto(1,1);//open
         //hardware.clawGreenAuto(0,1);//close
         // just reverse the whole thing
 
-
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        sleep(1000); */
+        sleep(1000);
 
     }
 

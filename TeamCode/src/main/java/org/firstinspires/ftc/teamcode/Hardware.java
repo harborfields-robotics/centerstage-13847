@@ -35,7 +35,8 @@ public class Hardware {
         private DcMotor rightFrontDrive = null;
         private DcMotor rightBackDrive = null;
         private DcMotor arm = null;
-        public Servo claw;
+        public Servo clawRight;
+        public Servo clawLeft;
         private IMU imu;
         private double yawChangeAmt = 10;
         private double imuangle;
@@ -49,7 +50,8 @@ public class Hardware {
             FR = rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
             BR = rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
             arm = hardwareMap.get(DcMotor.class, "ARM");
-            claw = hardwareMap.get(Servo.class, "CLAW");
+            clawRight = hardwareMap.get(Servo.class, "CLAWR");
+            clawLeft = hardwareMap.get(Servo.class, "CLAWL");
             imu =  hardwareMap.get(IMU.class, "imu");
 
             arm.setMode(STOP_AND_RESET_ENCODER);
@@ -93,11 +95,16 @@ public class Hardware {
             arm.setPower(power);
         }
 
-        public void setClawposition(double power){claw.setPosition(power);}
-        public double getClawposition() { return claw.getPosition(); }
+        public void setClawRightPosition(double power){clawRight.setPosition(power);}
+        public double getClawRightposition() { return clawRight.getPosition(); }
+
+        public void setClawLeftPositon(double power){clawLeft.setPosition(power);}
+        public double getClawLeftposition() { return clawLeft.getPosition(); }
 
 
-        public void setMotorPowers(double... powers)
+
+
+    public void setMotorPowers(double... powers)
         {
             leftFrontDrive.setPower(powers[0]);
             leftBackDrive.setPower(powers[1]);
@@ -255,11 +262,17 @@ public class Hardware {
             setArmPower(0);
         }
 
-        public void clawAuto(double position, long milliseconds) throws java.lang.InterruptedException {
-            setClawposition(position);
+        public void clawRightAuto(double position, long milliseconds) throws java.lang.InterruptedException {
+            setClawRightPosition(position);
             Thread.sleep(milliseconds);
-            setClawposition(0.5);
+            setClawRightPosition(0.5);
         }
+
+         public void clawLeftAuto(double position, long milliseconds) throws java.lang.InterruptedException {
+            setClawLeftPositon(position);
+            Thread.sleep(milliseconds);
+            setClawLeftPositon(0.5);
+         }
 
 
         public void EmilysCopyPaste(int power) throws java.lang.InterruptedException{
