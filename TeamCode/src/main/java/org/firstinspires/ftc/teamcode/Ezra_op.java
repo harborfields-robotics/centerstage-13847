@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Ezra_op", group="Linear OpMode")
 public class Ezra_op extends LinearOpMode
@@ -52,13 +53,17 @@ public class Ezra_op extends LinearOpMode
     public static final double MAX_POSITION = 6000, MIN_POSITION = 0;
     private Hardware hardware;
 
+    private int armPosition = 0;
+
     @Override
     public void runOpMode() {
-
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
         hardware = new Hardware(hardwareMap);
         arm = hardwareMap.get(DcMotor.class, "ARM");
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftFrontDrive = hardwareMap.get(DcMotor.class, "FL");
         leftBackDrive = hardwareMap.get(DcMotor.class, "BL");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
@@ -97,8 +102,6 @@ public class Ezra_op extends LinearOpMode
                 double rightFrontPower = axial - lateral - yaw;
                 double leftBackPower = axial - lateral + yaw;
                 double rightBackPower = axial + lateral - yaw;
-                double armPower = gamepad2.left_stick_y;
-
 
                 // Normalize the values so no wheel power exceeds 100%
                 // This ensures that the robot maintains the desired motion.
@@ -125,12 +128,6 @@ public class Ezra_op extends LinearOpMode
                 else
                     hardware.setMotorPowers(powers);
 
-                if (arm.getPower() > 0 && arm.getCurrentPosition() > MAX_POSITION) {
-                    arm.setPower(0);
-                } else if (arm.getPower() < 0 && arm.getCurrentPosition() < MIN_POSITION) {
-                    arm.setPower(0);
-                }
-
                 if (gamepad1.dpad_left){
                     hardware.turnLeft(45,1);
                 }
@@ -138,10 +135,14 @@ public class Ezra_op extends LinearOpMode
                     hardware.turnRight(45,1);
                 }
 
+                /*
+                double armPower = 0;
                 if (armSlowMode)
                     hardware.setArmsSlowMode(armPower);
                 else
-                    hardware.setArmPower(armPower);
+                    hardware.setArmPower(armPower); */
+                if (Math.abs(gamepad2.right_stick_y) > 0.2)
+                    arm.setTargetPosition(armPosition = Range.clip(Math.round(armPosition + gamepad2.right_stick_y * 5), 0, Integer.MAX_VALUE));
 
                 if (gamepad2.left_bumper)
                     hardware.setClawLeftPositon(1);

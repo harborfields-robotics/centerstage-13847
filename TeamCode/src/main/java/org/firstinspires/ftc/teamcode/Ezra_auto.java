@@ -71,6 +71,7 @@ public class Ezra_auto extends LinearOpMode {
         hardware.turnLeft(90,1);
         hardware.driveForward(4.3,1);
 
+
         //hardware.slideAuto(1,1);
         //hardware.elbowAuto(0,1);
         //hardware.clawGreenAuto(1,1);//open
