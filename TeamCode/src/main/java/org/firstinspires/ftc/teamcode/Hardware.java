@@ -35,8 +35,9 @@ public class Hardware {
         private DcMotor rightFrontDrive = null;
         private DcMotor rightBackDrive = null;
         private DcMotor arm = null;
-        public Servo clawRight;
-        public Servo clawLeft;
+        private Servo clawRight;
+        private Servo clawLeft;
+        private Servo wrist;
         private IMU imu;
         private double yawChangeAmt = 10;
         private double imuangle;
@@ -52,6 +53,7 @@ public class Hardware {
             arm = hardwareMap.get(DcMotor.class, "ARM");
             clawRight = hardwareMap.get(Servo.class, "CLAWR");
             clawLeft = hardwareMap.get(Servo.class, "CLAWL");
+            wrist = hardwareMap.get(Servo.class, "WRIST");
             imu =  hardwareMap.get(IMU.class, "imu");
 
             arm.setMode(STOP_AND_RESET_ENCODER);
@@ -100,6 +102,9 @@ public class Hardware {
 
         public void setClawLeftPositon(double power){clawLeft.setPosition(power);}
         public double getClawLeftposition() { return clawLeft.getPosition(); }
+
+        public void setWristPosition(double power){wrist.setPosition(power);}
+        public double getWristposition() { return wrist.getPosition(); }
 
 
 
@@ -273,6 +278,12 @@ public class Hardware {
             Thread.sleep(milliseconds);
             setClawLeftPositon(0.5);
          }
+
+        public void wristAuto(double position, long milliseconds) throws java.lang.InterruptedException {
+            setWristPosition(position);
+            Thread.sleep(milliseconds);
+            setWristPosition(0.5);
+        }
 
 
         public void EmilysCopyPaste(int power) throws java.lang.InterruptedException{
