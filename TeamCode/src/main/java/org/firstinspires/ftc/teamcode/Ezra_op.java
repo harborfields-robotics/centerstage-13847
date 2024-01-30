@@ -64,7 +64,7 @@ public class Ezra_op extends LinearOpMode
         arm = hardwareMap.get(DcMotor.class, "ARM");
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftFrontDrive = hardwareMap.get(DcMotor.class, "FL");
         leftBackDrive = hardwareMap.get(DcMotor.class, "BL");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
@@ -75,7 +75,6 @@ public class Ezra_op extends LinearOpMode
 
         //claw_Green.scaleRange(0.25, 0.75);
         //elbow_Left.scaleRange(0,0.25);  servo programs
-
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -125,6 +124,7 @@ public class Ezra_op extends LinearOpMode
 
                 // Send calculated power to wheels
                 double powers[] = {leftFrontPower, leftBackPower, rightBackPower, rightFrontPower};
+                telemetry.addLine(powers[0] + ", " + powers[1] + ", " + powers[2] + ", " + powers[3]);
                 if (slowMode)
                     hardware.setMotorSlowMode(powers);
                 else
@@ -137,14 +137,13 @@ public class Ezra_op extends LinearOpMode
                     hardware.turnRight(45,1);
                 }
 
-                /*
-                double armPower = 0;
+                /* double armPower = 0;
                 if (armSlowMode)
                     hardware.setArmsSlowMode(armPower);
                 else
                     hardware.setArmPower(armPower); */
-                if (Math.abs(gamepad2.right_stick_y) > 0.2)
-                    arm.setTargetPosition(armPosition = Range.clip(Math.round(armPosition + gamepad2.right_stick_y * 5), 0, Integer.MAX_VALUE));
+                if (Math.abs(gamepad2.left_stick_y) > 0.2)
+                    armPosition = (int) Math.round(armPosition + 5.0 * gamepad2.left_stick_y);
 
                 if (gamepad2.left_bumper)
                     hardware.setClawLeftPositon(1);
@@ -164,14 +163,21 @@ public class Ezra_op extends LinearOpMode
                 else if (gamepad2.right_stick_y < -0.2){
                     hardware.setWristPosition(hardware.getWristposition() - 0.05);
                 }
-                else{
+                else {
                     hardware.setWristPosition(0.5);
                 }
+
+                double armError = armPosition - arm.getCurrentPosition();
+                double armPower = 0.5 * (Math.abs(armError) < 10 ? 0 : Range.clip(armError / 250, -1, 1));
+                arm.setPower(armPower - Math.signum(armPower) * gamepad2.right_trigger);
 
                 // Show the elapsed game time and wheel power.
                 telemetry.addData("Status", "Run Time: " + runtime.toString());
                 telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
                 telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
+                telemetry.addData("arm real position", arm.getCurrentPosition());
+                telemetry.addData("arm target position", armPosition);
+                telemetry.addData("arm power", armPower);
                 telemetry.update();
         }
     }
