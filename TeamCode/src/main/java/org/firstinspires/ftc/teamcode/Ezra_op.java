@@ -50,6 +50,7 @@ public class Ezra_op extends LinearOpMode
     private DcMotor arm = null;
     public Servo clawRight;
     public Servo clawLeft;
+    private Servo airPPlane;
     private Servo wrist;
     public static final double MAX_POSITION = 6000, MIN_POSITION = 0;
     private Hardware hardware;
@@ -69,6 +70,7 @@ public class Ezra_op extends LinearOpMode
         leftBackDrive = hardwareMap.get(DcMotor.class, "BL");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
+        airPPlane = hardwareMap.get(Servo.class, "PLANE");
         clawRight = hardwareMap.get(Servo.class, "CLAWR");
         clawLeft = hardwareMap.get(Servo.class, "CLAWL");
         wrist = hardwareMap.get(Servo.class, "WRIST");
@@ -165,6 +167,15 @@ public class Ezra_op extends LinearOpMode
                 }
                 else {
                     hardware.setWristPosition(0.5);
+                }
+
+                if (gamepad2.y) {
+                    hardware.setPlanePosition(1);
+                    Hardware.sleep(2000);
+                    hardware.setPlanePosition(0);
+                }
+                else{
+                    hardware.setPlanePosition(0.5);
                 }
 
                 double armError = armPosition - arm.getCurrentPosition();

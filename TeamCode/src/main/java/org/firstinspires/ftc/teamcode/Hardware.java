@@ -20,6 +20,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
+import java.util.HashMap;
+
 
 public class Hardware {
         // Declare OpMode members for each of the 4 motors.
@@ -38,6 +40,7 @@ public class Hardware {
         private Servo clawRight;
         private Servo clawLeft;
         private Servo wrist;
+        private Servo airPPlane;
         private IMU imu;
         private double yawChangeAmt = 10;
         private double imuangle;
@@ -51,6 +54,7 @@ public class Hardware {
             FR = rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
             BR = rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
             arm = hardwareMap.get(DcMotor.class, "ARM");
+            airPPlane = hardwareMap.get(Servo.class, "PLANE");
             clawRight = hardwareMap.get(Servo.class, "CLAWR");
             clawLeft = hardwareMap.get(Servo.class, "CLAWL");
             wrist = hardwareMap.get(Servo.class, "WRIST");
@@ -105,6 +109,9 @@ public class Hardware {
 
         public void setWristPosition(double power){wrist.setPosition(power);}
         public double getWristposition() { return wrist.getPosition(); }
+
+    public void setPlanePosition(double power){airPPlane.setPosition(power);}
+    public double getPlanePosition() { return airPPlane.getPosition(); }
 
 
 
@@ -427,4 +434,17 @@ public class Hardware {
         BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+    /*void test() {
+        HashMap<String, Password> map = new HashMap<String, Password>();
+        map.put("admin", new Password("letmein"));
+        map.put("ezra", new Password("password"));
+        Password ezraPass = map.get("ezra");
+    }*/
+
+    public static void sleep(long ms)
+    {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException ignored) {}
+    }
 }
