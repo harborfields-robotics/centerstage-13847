@@ -6,20 +6,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous
-public class Ezra_auto extends LinearOpMode {
+public class EzraAutoNothing extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFrontDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor rightBackDrive = null;
-    private DcMotor slideRight = null;
-    private Servo elbow_Left = null;
-    private Servo elbow_Right = null;
-    private Servo claw_Green;
-    private Servo claw_Red;
-    private DcMotor intake = null;
+    public DcMotor leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive;
+    public DcMotor arm;
+    public Servo clawRight, clawLeft, wrist, airPPlane;
     private Hardware hardware;
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
@@ -38,21 +31,9 @@ public class Ezra_auto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
-        // Initialize the hardware variables. Note that the strings used here must correspond
-        // to the names assigned during the robot configuration step on the DS or RC devices.
-        hardware = new Hardware(hardwareMap);
-        slideRight = hardwareMap.get(DcMotor.class, "SR");
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "FL");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "BL");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
-        intake = hardwareMap.get(DcMotor.class, "IT");
-        elbow_Left = hardwareMap.get(Servo.class, "EL");
-        elbow_Right = hardwareMap.get(Servo.class, "ER");
-        claw_Green = hardwareMap.get(Servo.class, "CG");
-        claw_Red = hardwareMap.get(Servo.class, "CR");
-
+        clawRight = hardwareMap.get(Servo.class, "CLAWR");
+        clawLeft = hardwareMap.get(Servo.class, "CLAWL");
+        wrist = hardwareMap.get(Servo.class, "WRIST");
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -67,21 +48,10 @@ public class Ezra_auto extends LinearOpMode {
         //        //encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         //        //encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 
-        hardware.driveForward(1, 1);
-        hardware.turnLeft(90,1);
-        hardware.driveForward(4.3,1);
-
-
-        //hardware.slideAuto(1,1);
-        //hardware.elbowAuto(0,1);
-        //hardware.clawGreenAuto(1,1);//open
-        //hardware.clawGreenAuto(0,1);//close
-        // just reverse the whole thing
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);
-
     }
 
     /*
@@ -159,4 +129,3 @@ public class Ezra_auto extends LinearOpMode {
         }
     }
 }
-

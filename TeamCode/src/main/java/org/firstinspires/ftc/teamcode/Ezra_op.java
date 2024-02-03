@@ -47,7 +47,6 @@ public class Ezra_op extends LinearOpMode
     private DcMotor leftBackDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
-    private DcMotor arm = null;
     public Servo clawRight;
     public Servo clawLeft;
     private Servo airPPlane;
@@ -62,10 +61,6 @@ public class Ezra_op extends LinearOpMode
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
         hardware = new Hardware(hardwareMap);
-        arm = hardwareMap.get(DcMotor.class, "ARM");
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftFrontDrive = hardwareMap.get(DcMotor.class, "FL");
         leftBackDrive = hardwareMap.get(DcMotor.class, "BL");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
@@ -83,13 +78,13 @@ public class Ezra_op extends LinearOpMode
 
         waitForStart();
         runtime.reset();
+        hardware.setArmHoldPosition(20, 0.5);
 
         boolean slowMode = false;
         boolean armSlowMode = false;
 
-        while (opModeIsActive()) {
-
-
+        while (opModeIsActive())
+        {
             // run until the end of the match (driver presses STOP)
             //while (opModeIsActive()) {
 
@@ -97,8 +92,8 @@ public class Ezra_op extends LinearOpMode
 
                 // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
                 double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-                double lateral = gamepad1.left_stick_x;
-                double yaw = gamepad1.right_stick_x;
+                double lateral = gamepad1.right_stick_x;
+                double yaw = gamepad1.left_stick_x;
                 // Combine the joystick requests for each axis-motion to determine each wheel's power.
                 // Set up a variable for each drive wheel to save the power level for telemetry.
                 double leftFrontPower = axial + lateral + yaw;
@@ -123,6 +118,11 @@ public class Ezra_op extends LinearOpMode
                     slowMode = !slowMode;
                 if (gamepad2.a)
                     armSlowMode = !armSlowMode;
+
+                if (gamepad2.square)
+                    hardware.setArmHoldPosition(20, 1);
+                else if (gamepad2.triangle)
+                    hardware.setArmHoldPosition(150, 1);
 
                 // Send calculated power to wheels
                 double powers[] = {leftFrontPower, leftBackPower, rightBackPower, rightFrontPower};
@@ -159,15 +159,7 @@ public class Ezra_op extends LinearOpMode
                     hardware.setClawRightPosition(hardware.getClawRightposition() - 0.05);
                 else hardware.setClawRightPosition(0.5);
 
-                if (gamepad2.right_stick_y > 0.2){
-                    hardware.setWristPosition(hardware.getWristposition() + 0.05);
-                }
-                else if (gamepad2.right_stick_y < -0.2){
-                    hardware.setWristPosition(hardware.getWristposition() - 0.05);
-                }
-                else {
-                    hardware.setWristPosition(0.5);
-                }
+                hardware.wrist.setPosition(hardware.wrist.getPosition() - 0.5 * gamepad2.right_stick_y * hardware.deltaTime());
 
                 if (gamepad2.y) {
                     hardware.setPlanePosition(1);
@@ -178,17 +170,13 @@ public class Ezra_op extends LinearOpMode
                     hardware.setPlanePosition(0.5);
                 }
 
-                double armError = armPosition - arm.getCurrentPosition();
-                double armPower = 0.5 * (Math.abs(armError) < 10 ? 0 : Range.clip(armError / 250, -1, 1));
-                arm.setPower(armPower - Math.signum(armPower) * gamepad2.right_trigger);
-
                 // Show the elapsed game time and wheel power.
+                int armPosition = hardware.arm.getCurrentPosition();
+                int armTarget = hardware.arm.getTargetPosition();
+                telemetry.addData("arm", "real %d target %d error %d", armPosition, armTarget, armTarget - armPosition);
                 telemetry.addData("Status", "Run Time: " + runtime.toString());
                 telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
                 telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-                telemetry.addData("arm real position", arm.getCurrentPosition());
-                telemetry.addData("arm target position", armPosition);
-                telemetry.addData("arm power", armPower);
                 telemetry.update();
         }
     }

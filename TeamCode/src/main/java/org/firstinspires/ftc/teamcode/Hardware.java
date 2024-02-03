@@ -32,18 +32,13 @@ public class Hardware {
     static double ticks_per_degree = 7.45;
 
     private ElapsedTime runtime = new ElapsedTime();
-        private DcMotor leftFrontDrive = null;
-        private DcMotor leftBackDrive = null;
-        private DcMotor rightFrontDrive = null;
-        private DcMotor rightBackDrive = null;
-        private DcMotor arm = null;
-        private Servo clawRight;
-        private Servo clawLeft;
-        private Servo wrist;
-        private Servo airPPlane;
-        private IMU imu;
-        private double yawChangeAmt = 10;
-        private double imuangle;
+    public DcMotor leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive;
+    public DcMotor arm;
+    public Servo clawRight, clawLeft, wrist, airPPlane;
+    public IMU imu;
+    private long lastTimeStamp;
+    private double yawChangeAmt = 10;
+    private double imuangle;
 
         private DcMotor FL, BL, BR, FR;
         public static final double SLOW_RATE = 0.3;
@@ -59,15 +54,15 @@ public class Hardware {
             clawLeft = hardwareMap.get(Servo.class, "CLAWL");
             wrist = hardwareMap.get(Servo.class, "WRIST");
             imu =  hardwareMap.get(IMU.class, "imu");
+            arm = hardwareMap.get(DcMotor.class, "ARM");
+            arm.setDirection(DcMotor.Direction.REVERSE);
 
             arm.setMode(STOP_AND_RESET_ENCODER);
-            arm.setMode(RUN_WITHOUT_ENCODER);
 
             leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
             leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
             rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
             rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
-            arm.setDirection(DcMotor.Direction.REVERSE);
 
             RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
             RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
@@ -77,6 +72,23 @@ public class Hardware {
             // Now initialize the IMU with this mounting orientation
             // Note: if you choose two conflicting directions, this initialization will cause a code exception.
             imu.initialize(new IMU.Parameters(orientationOnRobot));
+            lastTimeStamp = System.nanoTime();
+        }
+
+        public double deltaTime()
+        {
+            long now = System.nanoTime();
+            double delta = (now - lastTimeStamp) / 1e9;
+            lastTimeStamp = now;
+            return delta;
+        }
+
+        public void setArmHoldPosition(int position, double power)
+        {
+            arm.setMode(RUN_WITHOUT_ENCODER);
+            arm.setTargetPosition(position);
+            arm.setMode(RUN_TO_POSITION);
+            arm.setPower(power);
         }
 
         public double getYaw() {
@@ -280,9 +292,9 @@ public class Hardware {
             setClawRightPosition(0.5);
         }
 
-         public void clawLeftAuto(double position, long milliseconds) throws java.lang.InterruptedException {
+         public void clawLeftAuto(double position, long milliseconds){
             setClawLeftPositon(position);
-            Thread.sleep(milliseconds);
+            Hardware.sleep(milliseconds);
             setClawLeftPositon(0.5);
          }
 
